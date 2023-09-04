@@ -9,6 +9,26 @@
 `ifndef IDMA_TYPEDEF_SVH_
 `define IDMA_TYPEDEF_SVH_
 
+typedef struct packed {
+    axi_pkg::burst_t  burst;
+    axi_pkg::cache_t  cache;
+    logic             lock;
+    axi_pkg::prot_t   prot;
+    axi_pkg::qos_t    qos;
+    axi_pkg::region_t region;
+} axi_options_t;
+
+typedef struct packed {
+    logic       decouple_aw;
+    logic       decouple_rw;
+    logic [2:0] src_max_llen;
+    logic [2:0] dst_max_llen;
+    logic       src_reduce_len;
+    logic       dst_reduce_len;
+} backend_options_t;
+
+typedef logic [1:0] err_type_t;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // iDMA Request and Response Structs
 //
@@ -20,15 +40,15 @@
 `define IDMA_TYPEDEF_OPTIONS_T(options_t, axi_id_t)                      \
     typedef struct packed {                                              \
         axi_id_t                    axi_id;                              \
-        idma_pkg::axi_options_t     src;                                 \
-        idma_pkg::axi_options_t     dst;                                 \
-        idma_pkg::backend_options_t beo;                                 \
+        axi_options_t               src;                                 \
+        axi_options_t               dst;                                 \
+        backend_options_t           beo;                                 \
         logic                       last;                                \
     } options_t;
 `define IDMA_TYPEDEF_ERR_PAYLOAD_T(err_payload_t, axi_addr_t)            \
     typedef struct packed {                                              \
         axi_pkg::resp_t      cause;                                      \
-        idma_pkg::err_type_t err_type;                                   \
+        err_type_t           err_type;                                   \
         axi_addr_t           burst_addr;                                 \
     } err_payload_t;
 `define IDMA_TYPEDEF_REQ_T(idma_req_t, tf_len_t, axi_addr_t, options_t)  \

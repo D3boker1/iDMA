@@ -12,6 +12,19 @@
 `include "idma/typedef.svh"
 `include "register_interface/typedef.svh"
 
+typedef struct packed {
+    logic buffer_busy;
+    logic r_dp_busy;
+    logic w_dp_busy;
+    logic r_leg_busy;
+    logic w_leg_busy;
+    logic eh_fsm_busy;
+    logic eh_cnt_busy;
+    logic raw_coupler_busy;
+} idma_busy_t;
+/// Error Handling Type
+typedef logic [0:0] idma_eh_req_t;
+
 module dma_core_wrap #(
   parameter int unsigned AXI_ADDR_WIDTH     = -1,
   parameter int unsigned AXI_DATA_WIDTH     = -1,
@@ -59,7 +72,7 @@ module dma_core_wrap #(
 
   idma_req_t burst_req;
   logic be_valid, be_ready, be_trans_complete;
-  idma_pkg::idma_busy_t idma_busy;
+  idma_busy_t idma_busy;
 
   dma_regs_req_t dma_regs_req;
   dma_regs_rsp_t dma_regs_rsp;
@@ -118,11 +131,11 @@ module dma_core_wrap #(
     .HardwareLegalizer   ( 1'b1                        ),
     .RejectZeroTransfers ( 1'b1                        ),
     .MemSysDepth         ( 32'd0                       ),
-    .ErrorCap            ( idma_pkg::NO_ERROR_HANDLING ),
+    .ErrorCap            ( '0                          ),
     .idma_req_t          ( idma_req_t                  ),
     .idma_rsp_t          ( idma_rsp_t                  ),
-    .idma_eh_req_t       ( idma_pkg::idma_eh_req_t     ),
-    .idma_busy_t         ( idma_pkg::idma_busy_t       ),
+    .idma_eh_req_t       ( idma_eh_req_t               ),
+    .idma_busy_t         ( idma_busy_t                 ),
     .protocol_req_t      ( axi_mst_req_t               ),
     .protocol_rsp_t      ( axi_mst_resp_t              ),
     .aw_chan_t           ( axi_mst_aw_chan_t           ),
