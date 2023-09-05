@@ -38,6 +38,7 @@ module idma_reg64_frontend #(
     // transaction id
     logic [DmaRegisterWidth-1:0] next_id, done_id;
     logic issue;
+    logic infinit;
 
     dma_regs_rsp_t dma_ctrl_rsp_tmp;
 
@@ -71,8 +72,9 @@ module idma_reg64_frontend #(
         dma_ctrl_rsp_o = dma_ctrl_rsp_tmp;
 
         // start transaction upon next_id read (and having a valid config)
-        if (dma_reg2hw.next_id.re) begin
+        if (dma_reg2hw.next_id.re || infinit) begin
            if (dma_reg2hw.num_bytes.q != '0) begin
+                infinit = 1'b1;
                 valid_o = 1'b1;
                 dma_hw2reg.next_id.d = next_id;
                 dma_ctrl_rsp_o.ready = ready_i;
