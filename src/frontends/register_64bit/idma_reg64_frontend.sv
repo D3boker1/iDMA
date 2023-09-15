@@ -72,7 +72,7 @@ module idma_reg64_frontend #(
         dma_ctrl_rsp_o = dma_ctrl_rsp_tmp;
 
         // start transaction upon next_id read (and having a valid config)
-        if (dma_reg2hw.next_id.re || infinit) begin
+        if (dma_reg2hw.next_id.re || dma_reg2hw.conf.infinit.q) begin
            if (dma_reg2hw.num_bytes.q != '0) begin
                 infinit = 1'b1;
                 valid_o = 1'b1;

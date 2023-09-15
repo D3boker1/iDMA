@@ -80,6 +80,9 @@ module idma_reg64_frontend_reg_top #(
   logic conf_decouple_qs;
   logic conf_decouple_wd;
   logic conf_decouple_we;
+  logic conf_infinit_qs;
+  logic conf_infinit_wd;
+  logic conf_infinit_we;
   logic conf_deburst_qs;
   logic conf_deburst_wd;
   logic conf_deburst_we;
@@ -228,6 +231,31 @@ module idma_reg64_frontend_reg_top #(
     .qs     (conf_deburst_qs)
   );
 
+  //   F[deburst]: 1:1
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("RW"),
+    .RESVAL  (1'h0)
+  ) u_conf_infinit (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (conf_infinit_we),
+    .wd     (conf_infinit_wd),
+
+    // from internal hardware
+    .de     (1'b0),
+    .d      ('0  ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (reg2hw.conf.infinit.q ),
+
+    // to register interface (read)
+    .qs     (conf_infinit_qs)
+  );
+
 
   //   F[serialize]: 2:2
   prim_subreg #(
@@ -349,6 +377,9 @@ module idma_reg64_frontend_reg_top #(
   assign conf_serialize_we = addr_hit[3] & reg_we & !reg_error;
   assign conf_serialize_wd = reg_wdata[2];
 
+  assign conf_infinit_we = addr_hit[3] & reg_we & !reg_error;
+  assign conf_infinit_wd = reg_wdata[3];
+
   assign status_re = addr_hit[4] & reg_re & !reg_error;
 
   assign next_id_re = addr_hit[5] & reg_re & !reg_error;
@@ -375,6 +406,7 @@ module idma_reg64_frontend_reg_top #(
         reg_rdata_next[0] = conf_decouple_qs;
         reg_rdata_next[1] = conf_deburst_qs;
         reg_rdata_next[2] = conf_serialize_qs;
+        reg_rdata_next[3] = conf_infinit_qs;
       end
 
       addr_hit[4]: begin

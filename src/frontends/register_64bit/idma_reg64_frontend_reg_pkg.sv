@@ -35,6 +35,9 @@ package idma_reg64_frontend_reg_pkg;
     struct packed {
       logic        q;
     } serialize;
+    struct packed {
+      logic        q;
+    } infinit;
   } idma_reg64_frontend_reg2hw_conf_reg_t;
 
   typedef struct packed {
