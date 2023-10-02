@@ -35,6 +35,7 @@ module dma_core_wrap #(
   input  logic   clk_i,
   input  logic   rst_ni,
   input  logic   testmode_i,
+  output logic   running_o,
   AXI_BUS.Master axi_master,
   AXI_BUS.Slave  axi_slave
 );
@@ -107,6 +108,7 @@ module dma_core_wrap #(
   ) i_dma_frontend (
     .clk_i,
     .rst_ni,
+    .running_o,
     // AXI slave: control port
     .dma_ctrl_req_i   ( dma_regs_req      ),
     .dma_ctrl_rsp_o   ( dma_regs_rsp      ),

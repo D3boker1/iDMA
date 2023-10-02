@@ -16,6 +16,7 @@ module idma_reg64_frontend #(
 ) (
     input  logic          clk_i,
     input  logic          rst_ni,
+    output logic          running_o,
     /// register interface control slave
     input  dma_regs_req_t dma_ctrl_req_i,
     output dma_regs_rsp_t dma_ctrl_rsp_o,
@@ -26,6 +27,9 @@ module idma_reg64_frontend #(
     input  logic          backend_idle_i,
     input  logic          trans_complete_i
 );
+
+    assign running_o = dma_reg2hw.conf.infinit.q;
+
 
     localparam int unsigned DmaRegisterWidth = 64;
 
